@@ -1,31 +1,22 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../core/configs/app_theme.dart';
 import '../../../domain/states/core/theme/theme_state.dart';
 import '../../../domain/usecases/storage/theme/theme_storage_usecases.dart';
 
-final themeModeProvider = StateProvider<ThemeMode>((ref) {
-  return ref.watch(themeStateProvider).when(
-        light: () => ThemeMode.light,
-        dark: () => ThemeMode.dark,
-        system: () => ThemeMode.system,
-      );
-});
-
 final themeStateProvider =
     StateNotifierProvider<ThemeStateNotifier, ThemeState>((ref) {
-  return ThemeStateNotifier(ref.read);
+  return ThemeStateNotifier(ref);
 });
 
 class ThemeStateNotifier extends StateNotifier<ThemeState> {
   ThemeState get currentState => state;
 
-  final Reader _read;
-  late final ReadTheme _readThemeUseCase = _read(readThemeUseCaseProvider);
-  late final WriteTheme _writeThemeUseCase = _read(writeThemeUseCaseProvider);
+  final Ref _ref;
+  late final ReadTheme _readThemeUseCase = _ref.watch(readThemeUseCaseProvider);
+  late final WriteTheme _writeThemeUseCase =
+      _ref.watch(writeThemeUseCaseProvider);
 
-  ThemeStateNotifier(this._read) : super(const ThemeState.system()) {
+  ThemeStateNotifier(this._ref) : super(const ThemeState.system()) {
     _init();
   }
 
@@ -37,7 +28,4 @@ class ThemeStateNotifier extends StateNotifier<ThemeState> {
     await _writeThemeUseCase(themeState);
     state = themeState;
   }
-
-  ThemeData get lightThemeData => AppTheme.lightTheme;
-  ThemeData get darkThemeData => AppTheme.darkTheme;
 }

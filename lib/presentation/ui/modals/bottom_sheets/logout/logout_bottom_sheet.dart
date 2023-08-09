@@ -1,72 +1,64 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../../../../../core/utils/styles/ui_helper.dart';
+import '../../../../../core/utils/extensions/context_extension.dart';
+import '../../../../../core/utils/styles/dimensions/ui_dimensions.dart';
 import '../../../../providers/core/router_provider.dart';
 import '../../../../providers/home/home_provider.dart';
+import '../../../hooks/app_loc_hook.dart';
 import '../../../widgets/buttons/primary_button.dart';
-import '../../../widgets/buttons/secondary_outlined_button.dart';
+import '../../../widgets/buttons/secondary_button.dart';
 
-class LogoutBottomSheet extends ConsumerWidget {
+class LogoutBottomSheet extends HookConsumerWidget {
   const LogoutBottomSheet({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final bool isDarkMode =
-        Theme.of(context).colorScheme.brightness == Brightness.dark;
+    final appLoc = useAppLoc();
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 24),
-      decoration: BoxDecoration(
-        color: isDarkMode ? const Color(0xff2d2d30) : Colors.white,
-        borderRadius: const BorderRadius.only(
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.only(
           topLeft: Radius.circular(25.0),
           topRight: Radius.circular(25.0),
         ),
       ),
-      child: ListView(
-        shrinkWrap: true,
-        physics: const BouncingScrollPhysics(),
-        children: [
-          UIHelper.verticalSpaceMedium,
-          UIHelper.verticalSpaceSmall,
-          Center(
-            child: Text(
-              'Logout',
-              style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                    fontSize: 24,
-                    fontWeight: FontWeight.w600,
-                  ),
-            ),
-          ),
-          UIHelper.verticalSpaceMedium,
-          Center(
-            child: SizedBox(
-              width: 193,
+      child: Padding(
+        padding: const EdgeInsets.all(16).w,
+        child: Column(
+          children: [
+            Center(
               child: Text(
-                'Are you sure you want to logout from GenNex app ?',
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.bodyText2!.copyWith(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                    ),
+                appLoc.logout,
+                style: context.h3,
               ),
             ),
-          ),
-          UIHelper.verticalSpaceMedium,
-          PrimaryButton(
-            onPressed: () async {
-              ref.read(appRouterProvider).pop();
-              ref.read(homeProvider.notifier).logout();
-            },
-            text: "Logout",
-          ),
-          UIHelper.verticalSpaceMedium,
-          SecondaryOutlinedButton(
-            onPressed: () => ref.read(appRouterProvider).pop(),
-            text: "Cancel",
-          ),
-          UIHelper.verticalSpaceMedium,
-        ],
+            UIDimensions.verticalSpaceMedium,
+            Center(
+              child: SizedBox(
+                child: Text(
+                  appLoc.logoutConfirm,
+                  textAlign: TextAlign.center,
+                  style: context.h6,
+                ),
+              ),
+            ),
+            UIDimensions.verticalSpaceMedium,
+            PrimaryButton(
+              onPressed: () async {
+                await ref.read(homeProvider.notifier).logout();
+              },
+              text: appLoc.logout,
+            ),
+            UIDimensions.verticalSpaceMedium,
+            SecondaryButton(
+              onPressed: () => ref.read(appRouterProvider).pop(),
+              text: appLoc.cancel,
+            ),
+            UIDimensions.verticalSpaceMedium,
+          ],
+        ),
       ),
     );
   }

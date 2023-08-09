@@ -1,5 +1,4 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
 import '../../../domain/states/user/user_state.dart';
 import '../../../domain/usecases/user/user_usecases.dart';
@@ -10,14 +9,15 @@ final userStateProvider = StateNotifierProvider<UserNotifier, UserState>((ref) {
         orElse: () => const UserState.notAvailable(),
         authenticated: (user) => UserState.available(user),
       );
-  return UserNotifier(ref.read, userState);
+  return UserNotifier(ref, userState);
 });
 
 class UserNotifier extends StateNotifier<UserState> {
-  final Reader _read;
-  late final UpdateUser _updateUserUseCase = _read(updateUserUseCaseProvider);
+  final Ref _ref;
+  late final UpdateUser _updateUserUseCase =
+      _ref.watch(updateUserUseCaseProvider);
 
-  UserNotifier(this._read, UserState userState) : super(userState) {
+  UserNotifier(this._ref, UserState userState) : super(userState) {
     _init();
   }
 
@@ -30,7 +30,7 @@ class UserNotifier extends StateNotifier<UserState> {
       if (isUpdated) {
         state = UserState.available(updatedUser);
       } else {
-        Fluttertoast.showToast(msg: "Unable to update image");
+        // Fluttertoast.showToast(msg: "Unable to update image");
       }
     }
   }
@@ -43,7 +43,7 @@ class UserNotifier extends StateNotifier<UserState> {
       if (isUpdated) {
         state = UserState.available(updatedUser);
       } else {
-        Fluttertoast.showToast(msg: "Unable to update name");
+        // Fluttertoast.showToast(msg: "Unable to update name");
       }
     }
   }

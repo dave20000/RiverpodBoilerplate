@@ -19,11 +19,9 @@ Map<String, dynamic> _$$_UserApiDtoToJson(_$_UserApiDto instance) =>
       'id': instance.id,
       'name': instance.name,
       'profileImage': instance.profileImage,
-      'accountType': _$AccountTypeEnumMap[instance.accountType],
+      'accountType': _$AccountTypeEnumMap[instance.accountType]!,
     };
 
 const _$AccountTypeEnumMap = {
-  AccountType.facebook: 'facebook',
-  AccountType.google: 'google',
   AccountType.guest: 'guest',
 };

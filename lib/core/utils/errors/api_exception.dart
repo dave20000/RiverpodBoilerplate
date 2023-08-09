@@ -1,5 +1,8 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+
+import '../l10n/app_loc.dart';
 
 part 'api_exception.freezed.dart';
 
@@ -18,18 +21,20 @@ class ApiException with _$ApiException {
   const factory ApiException.unexpectedError() = _UnexpectedError;
   const factory ApiException.defaultError(String error) = _DefaultError;
 
-  factory ApiException.getDioException(DioError error) {
-    switch (error.type) {
-      case DioErrorType.cancel:
+  factory ApiException.getDioException(DioException exception) {
+    switch (exception.type) {
+      case DioExceptionType.cancel:
         return const ApiException.requestCancelled();
-      case DioErrorType.connectTimeout:
+      case DioExceptionType.connectionTimeout:
         return const ApiException.connectTimeout();
-      case DioErrorType.sendTimeout:
+      case DioExceptionType.connectionError:
+        return const ApiException.connectTimeout();
+      case DioExceptionType.sendTimeout:
         return const ApiException.sendTimeout();
-      case DioErrorType.receiveTimeout:
+      case DioExceptionType.receiveTimeout:
         return const ApiException.sendTimeout();
-      case DioErrorType.response:
-        switch (error.response!.statusCode) {
+      case DioExceptionType.badResponse:
+        switch (exception.response!.statusCode) {
           case 400:
             return const ApiException.badRequest();
           case 401:
@@ -39,7 +44,7 @@ class ApiException with _$ApiException {
           case 500:
             return const ApiException.internalServerError();
           default:
-            final responseCode = error.response!.statusCode;
+            final responseCode = exception.response!.statusCode;
             return ApiException.defaultError(
               "Received invalid status code: $responseCode",
             );
@@ -49,16 +54,16 @@ class ApiException with _$ApiException {
     }
   }
 
-  String get msg => when(
-        requestCancelled: () => "Request to server was cancelled",
-        connectTimeout: () => "Connection to server timed out",
-        receiveTimeout: () => "Receive timeout in connection with server",
-        sendTimeout: () => "Send timeout in connection with server",
-        badRequest: () => "Error:400 Bad request",
-        unAuthorizedRequest: () => "Error:401 Invalid api key",
-        requestNotFound: () => "Error:404 Request not found",
-        internalServerError: () => "Error:500 Internal server error",
-        unexpectedError: () => "Error: Something went wrong",
-        defaultError: (ex) => "Api Error occurred: $ex",
+  String msg(BuildContext context) => when(
+        requestCancelled: () => AppLoc.of(context).requestCancelled,
+        connectTimeout: () => AppLoc.of(context).connectTimeout,
+        receiveTimeout: () => AppLoc.of(context).receiveTimeout,
+        sendTimeout: () => AppLoc.of(context).sendTimeout,
+        badRequest: () => AppLoc.of(context).badRequest,
+        unAuthorizedRequest: () => AppLoc.of(context).unAuthorizedRequest,
+        requestNotFound: () => AppLoc.of(context).requestNotFound,
+        internalServerError: () => AppLoc.of(context).internalServerError,
+        unexpectedError: () => AppLoc.of(context).unexpectedError,
+        defaultError: (ex) => "${AppLoc.of(context).defaultError}: $ex",
       );
 }

@@ -4,20 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'core/app_bootstrapper.dart';
-import 'core/configs/riverpod_observer_log.dart';
+import 'core/configs/log/riverpod_observer_log.dart';
 import 'domain/service_providers.dart';
 import 'presentation/ui/app.dart';
 
 Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await AppBootStrapper.initialize();
-  _runAppInZone();
-}
-
-void _runAppInZone() {
   final container = ProviderContainer();
   final loggerService = container.read(loggerServiceProvider);
-  runZonedGuarded(() {
+  runZonedGuarded(() async {
+    await AppBootStrapper.initialize();
     runApp(
       ProviderScope(
         observers: [
@@ -27,6 +22,6 @@ void _runAppInZone() {
       ),
     );
   }, (ex, s) {
-    loggerService.logException(ex, s);
+    loggerService.errorLog(ex, s);
   });
 }

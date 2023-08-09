@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../../../core/configs/constants/app_constants.dart';
+import '../../../core/utils/constants/app_constants.dart';
 import '../../providers/core/app_state_provider.dart';
 import 'home/home_screen.dart';
 import 'login/login_screen.dart';
 
 class AppStartScreen extends HookConsumerWidget {
-  const AppStartScreen({Key? key}) : super(key: key);
+  const AppStartScreen({
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

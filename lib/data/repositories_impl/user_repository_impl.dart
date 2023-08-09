@@ -1,12 +1,12 @@
-import '../../core/configs/constants/app_constants.dart';
+import '../../core/utils/api/api_manager/api_manager.dart';
+import '../../core/utils/constants/app_constants.dart';
 import '../../core/utils/errors/app_exception.dart';
 import '../../core/utils/errors/cache_exception.dart';
+import '../../core/utils/local_storage/cache/cache_manager.dart';
+import '../../core/utils/local_storage/secure/secure_storage_manager.dart';
 import '../../domain/enums/account_type.dart';
 import '../../domain/models/user/user.dart';
 import '../../domain/repositories/user_repository.dart';
-import '../data_source/api/api_manager/api_manager.dart';
-import '../data_source/local/cache/cache_manager.dart';
-import '../data_source/local/secure_storage/secure_storage_manager.dart';
 import '../models/api/user/user_api_dto.dart';
 import '../models/cache/user/user_cache_dto.dart';
 import '../models/result/data_state.dart';
@@ -39,11 +39,11 @@ class UserRepositoryImpl implements UserRepository {
         accountType: AccountType.guest,
       );
       final userCacheDto = userApiDto.toCacheDto();
-      final isUserAdded = await _cacheManager.insertData<UserCacheDto>(
+      final userCacheDtoResponse = await _cacheManager.insertData<UserCacheDto>(
         UserCacheDto.boxKey,
         userCacheDto,
       );
-      if (isUserAdded) {
+      if (userCacheDtoResponse) {
         return DataState.success(userCacheDto.toModel());
       } else {
         return const DataState.error(
