@@ -63,16 +63,6 @@ abstract class ApiManager {
     CancelToken? cancelToken,
   });
 
-  // Future<ApiResponse<ChangePasswordApiDto>> changePassword<T extends ToJson>({
-  //   required String endpoint,
-  //   required dynamic data,
-  //   String? newBaseUrl,
-  //   Map<String, dynamic>? queryParams,
-  //   Map<String, dynamic>? headers,
-  // });
-
-  void cancelRequests({CancelToken? cancelToken});
-
   Future<ApiResponse<Map<String, dynamic>>> getMapAsync({
     required String endpoint,
     String? newBaseUrl,
@@ -89,4 +79,6 @@ abstract class ApiManager {
     Map<String, dynamic>? headers,
     CancelToken? cancelToken,
   });
+
+  void cancelRequests({CancelToken? cancelToken});
 }

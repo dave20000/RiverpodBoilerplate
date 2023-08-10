@@ -1,7 +1,7 @@
-import 'dart:developer';
-
 import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../domain/service_providers.dart';
 import 'configs/adapters/cache_dto_adapters.dart';
 import 'configs/app_serializers.dart';
 import 'logger/logger_service.dart';
@@ -18,17 +18,17 @@ class AppBootStrapper {
       //   CrashAnalyticsService().recordFlutterError(errorDetails);
       // };
       final widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
-
       SplashFactory.preserve(widgetsBinding: widgetsBinding);
-
       LoggerService.init();
       AppSerializer.init();
       await SecureStorageManagerImpl.init();
       await CacheManagerImpl.init(
         registerAdapterAndOpen: (hive) => CacheDtoAdapters.call(hive),
       );
-    } catch (ex) {
-      log("Error : $ex", error: ex);
+    } catch (ex, s) {
+      final container = ProviderContainer();
+      final loggerService = container.read(loggerServiceProvider);
+      loggerService.errorLog(ex, s);
     }
   }
 }

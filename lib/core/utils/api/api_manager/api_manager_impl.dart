@@ -31,7 +31,7 @@ class ApiManagerImpl extends ApiManager {
       headers: {
         HttpHeaders.contentTypeHeader: "application/json",
       },
-      // baseUrl: _ref.watch(selectedCountryConfigProvider).baseURL,
+      // baseUrl: AppConfiguration.baseUrl
     );
 
     // // Global options
@@ -270,7 +270,7 @@ class ApiManagerImpl extends ApiManager {
         final data = response.data as Map<String, dynamic>?;
         if (data == null) {
           return const ApiResponse.error(
-            AppException.unknownError("Api Resoponse is Empty"),
+            AppException.unknownError("Api Response is Empty"),
           );
         }
         return ApiResponse<Map<String, dynamic>>.success(
@@ -302,7 +302,7 @@ class ApiManagerImpl extends ApiManager {
       final data = response.data as String?;
       if (data == null) {
         return const ApiResponse.error(
-          AppException.unknownError("Api Resoponse is Empty"),
+          AppException.unknownError("Api Response is Empty"),
         );
       }
       return ApiResponse<String>.success(
